@@ -1,0 +1,251 @@
+// ION SEBASTIAN-FLORENTIN - 314CB
+// SD - TEMA 2
+
+
+Punctaj local: 135/135
+		20/20
+
+
+Header-ul "tlg.h":
+
+- structura pentru lista simplu inlantuita generica;
+- typedef pentru functii de comparare, afisare si eliberare memorie pentru
+	elemente;
+	
+- (1) int InsLG(TLG*, void*);
+	- inserare la inceput de lista;
+	- in cazul inserarii reusite, se returneaza 1.
+    
+- (2) void Distruge(TLG* aL, TF fe);
+ 	- distruge lista.
+      
+- (3) void Afisare(TLG*, TAfi, FILE*);
+	- afiseaza elementele din lista, folosind o functie de tip TFAfi.
+	
+	
+Header-ul "TCoada.h":
+
+- typedef pentru functie eliberare element;
+		  
+- (1) void* InitQ(size_t d);
+	- creeaza coada vida cu elemente de dimensiune d.
+    
+- (2) int InsQ(void* c, void* ae);
+	- adauga element la sfarsitul cozii.
+      
+- (3) int ExtrQ(void* c, void* ae);
+	- extrage primul element din coada la adresa ae.
+    
+- (4) int VidaQ(void* c);
+	- test coada vida.
+
+- (5) void ResetQ(void* c, TF freeEl);
+	- transforma coada in coada vida.
+
+- (6) void DistrQ(void** c, TF freeEl);
+	- elibereaza intregul spatiu ocupat de coada, folosind o functie
+	de tip TF.
+	
+- (7) int ConcatQ(void *ad, void *as);
+	- concatenare (muta toate elementele din sursa);
+	- rezultat < 0 - eroare, rezultat = 0 - sursa vida,
+	rezultat = 1 - succes.
+	
+
+Header-ul "TCoadaLista.h":
+
+- structura pentru coada, implementare folosing lista generica simplu
+	inlantuita;
+- macrodefinitii;
+
+
+Header-ul "TStiva.h":
+
+- typedef pentru functie eliberare element;
+		  
+- (1) void* InitS(size_t d);
+	- initializeaza stiva cu elemente de dimensiune d.
+    
+- (2) int Push(void* s, void* ae);
+	- pune element in varful stivei.
+      
+- (3) int Pop (void* s, void* ae);
+	- extrage elementul din varful stivei la adresa ae.
+    
+- (4) int VidaS(void* s);
+	- test stiva vida.
+
+- (5) void ResetS (void* s, TF freeEl);
+	- transforma stiva in stiva vida.
+
+- (6) void DistrS (void** s, TF freeEl);
+	- elibereaza intregul spatiu ocupat de stiva, folosind o functie
+	de tip TF.
+	
+- (7) int Rastoarna(void* ad, void* as);
+	- suprapune inversul sursei peste destinatie;
+	- rezultat < 0 - eroare, rezultat = 0 - sursa vida,
+	rezultat = 1 - succes.
+
+
+Header-ul "TStivaLista.h":
+
+- structura pentru stiva, implementare folosing lista generica simplu
+	inlantuita;
+- macrodefinitii;
+
+
+Header-ul "serial.h":
+
+- structura pentru tipul TSerial;
+
+- (1) int cmpSerial(void *a, void *b);
+	- comparare seriale, in functie de nume si rating.
+    
+- (2) void freeSerial(void *el);
+	- functie eliberare memorie pentru serial;
+	- se distruge coada sezoanelor respectivului serial;
+	- se elibereaza memoria pentru restul campurilor.
+      
+- (3) TSerial * findSerial(char *name, TLG L);
+	- cautare serial in listele categoriilor;
+    
+- (4) TSerial * findSerialQ(char *name, void *queue);
+	- cautare serial in coada;
+	- serialul respectiv nu va mai fi introdus ulterior in coada.
+
+- (5) TSerial * findSerialQIns(char *name, void *queue);
+	- cautare serial in coada;
+	- serialul respectiv va fi introdus in coada dupa identificare.
+
+- (6) TSerial * findSerialS(char *name, void *stack);
+	- cautare serial in stiva;
+	- serialul respectiv nu va mai fi introdus ulterior in stiva.
+	
+- (7) TSerial * findSerialSIns(char *name, void *stack);
+	- cautare serial in stiva;
+	- serialul respectiv va fi introdus in stiva dupa identificare.
+	
+	
+Header-ul "season.h":
+
+- structura pentru tipul TSeason;
+
+- (1) void freeSeason(void *el);
+	- functie eliberare memorie pentru un sezon;
+	- se distruge coada episoadelor respectivului sezon;
+	- se elibereaza memoria pentru restul campurilor.
+
+
+Fisierul "main.c":
+
+- rezultat = 1 - succes, rezultat = -1 eroare.
+
+- (1) void AfiEl(void *el, FILE *out);
+	- afisare serial (nume, rating).
+    
+- (2) int AfisareQ(FILE *out, void *queue);
+	- afisare coada;
+	- se distruge coada auxiliara.
+      
+- (3) int AfisareS(FILE *out, void *stack);
+	- afisare stiva;
+	- se distruge stiva auxiliara.
+    
+- (4) int inserareCat(TLG *L, void *serial, int *dimL, FILE *out, TFCmp cmp);
+	- inserare serial in categoria precizata;
+	- dimensiunea listei creste la fiecare inserare;
+	- variabila p indica daca inserarea se realizaeaza pe prima pozitie a
+	listei sau nu;
+	- se refac legaturile listei, cu ajutorul unor variabile auxiliare.
+
+- (5) int inserareTop(TLG *L, void *serial, int *dimL, FILE *out);
+	- inserare serial in categoria top10;
+	- dimensiunea listei creste la fiecare inserare;
+	- variabila p indica pozitia din top10 pe care trebuie inserat serialul
+	respectiv;
+	- variabila aux asigura inserarea pe pozitia corecta (se ajunge pe
+	pe pozitia corespunzatoare printr-un for);
+	- se verifica dimensiunea listei: daca aceasta este mai mare decat 10,
+	serialele aflate pe pozitii mai mari decat 10 se elimina din top;
+	- se ajunge pe penultima pozitie si pe ultima pozitie din lista
+	folosind doua variabile auxiliare si un for;
+	- se distruge lista serialelor care nu se afla printre cele 10 seriale
+	din top.
+
+- (6) int remainingTime(TSerial *serial, int offset);
+	- calculeaza timpul ramas pentru vizionare dintr-un serial;
+	- se folosesc doua cozi auxiliare pentru refacerea cozilor pentru
+	sezoane si pentru episoade;
+	- pentru prelucrarea informatiilor legate de durata serialului,
+	se extrag sezoanele, respectiv episoadele (duratele acestora);
+	- variabila offset, data ca parametru al functiei, retine timpul pentru
+	care utilizatorul doreste sa urmareasca serialul respectiv; acest timp
+	va fi scazut din durata primului episod extras; astfel, putem actualiza
+	timpul ramas dintr-un serial la diferite exectutii ale comenzii
+	"watch";
+	- variabila quit indica faptul ca offset a fost scazut o singura data;
+	- cozile auxiliare se distrug.
+	
+- (7) TLG updateList(TSerial *serial, TLG *L1, TLG *L2, TLG *L3, TLG *LTOP,
+                int *dimL1, int *dimL2, int *dimL3, int *dimLTOP);
+	- actualizare legaturi intr-o lista (eliminare serial dat ca 
+	parametru);
+	- lista corespunde categoriei din care face parte serialul;
+	- se parcurge lista pana cand se identifica serialul care trebuie
+	eliminat, pastrand totodata elementul anterior lui;
+	- daca ultim = NULL serialul care trebuie eliminat se afla pe prima
+	pozitie din lista; se refac legaturile si se elibereaza memoria dupa
+	eliminare;
+	- daca ultim != NULL se refac legaturile folosind variabila ultim si
+	se elibereaza memoria dupa eliminare.
+	
+- (8) int add (FILE *in, FILE *out, TLG *L1, TLG *L2, TLG *L3, int *dimL1,
+        int *dimL2, int *dimL3);
+        - functia corespunatoare comenzii "add";
+        - adauga un serial nou in categoria 1 <= ID <= 3.
+
+- (9) int add_sez(FILE *in, FILE *out, TLG *L1, TLG *L2, TLG *L3, TLG *LTOP,
+            void *watch_later, void *currently_watching)
+        - functia corespunatoare comenzii "add_sez";
+        - aduaga un sezon nou pentru un anumit serial;
+        - se cauta serialul folosind functiile de cautare, descrise anterior;
+        - se insereaza noul sezon creat in coada sezoanelor serialului;
+        - variabila care retine numarul de sezoane ale serialului se
+        actualizeaza.
+        
+- (10) int add_top(FILE *in, FILE *out, TLG *LTOP, int *dimLTOP);
+	- functia corespunatoare comenzii "add_top";
+	- adauga un serial nou in categoria Top10;
+	- se formeaza serialul si este adaugat in top folosind functia
+	"inserareTop".
+	
+- (11) int later(FILE *in, FILE *out, TLG *L1, TLG *L2, TLG *L3, TLG *LTOP,
+                int *dimL1, int *dimL2, int *dimL3, int *dimCLater,
+                int *dimLTOP, void *watch_later)
+	- functia corespunatoare comenzii "later";
+	- muta un serial din cele 4 categorii in coada watch_later;
+	- dupa mutare, serialul este eliminat din categoria din care provine
+	folosind functia "updateList".
+
+- (12) int watch(FILE *in, FILE *out, TLG *L1, TLG *L2, TLG *L3, TLG *LTOP,
+            int *dimL1, int *dimL2, int *dimL3, int *dimCLater,
+            int *dimLTOP, void *watch_later, void *currently_watching,
+            void *history)
+	- functia corespunatoare comenzii "watch";
+	- muta un serial in stiva currently_watching daca nu exista deja; se
+	vizioneaza o anumita durata de timp dintr-un serial;
+	- se cauta serialul folosind functiile descrise anterior, pentru liste,
+	respectiv cozi si stive;
+	- dupa ce serialul a fost gasit, se introduce in stiva
+	currently_watching si se elimina din categoria / coada watch_later in
+	care se afla inainte;
+	- se calculeaza minutele ramase din serial, folosind functia
+	"remainingTime"; daca rezultatul este negativ, serialul este eliminat
+	din stiva currently_watching si introdus in stiva history. 
+
+- (13) int show(FILE *in, FILE *out, TLG *L1, TLG *L2, TLG *L3, TLG *LTOP,
+        void *watch_later, void *currently_watching, void *history)
+        - functie corespunzatoare comenzii "show";
+        - afiseaza numele si rating-ul serialelor din lista / coada / stiva;
+        - se folosesc functiile de afisare descrise anterior.
